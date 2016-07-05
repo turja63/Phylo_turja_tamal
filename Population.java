@@ -28,9 +28,11 @@ public class Population {
     void RandomPopulation(){
         for(int i=0;i<popSize;i++)
         {
-            pop.add(GenRandomIndividual());
+        	Tree t=GenRandomIndividual();
+        	t.ParsimonizeTree();
+            pop.add(t);
             
-            ParsimonyScore.ParsimonizeTree(pop.get(i));
+            //ParsimonyScore.ParsimonizeTree(pop.get(i));
         }
     }
     
