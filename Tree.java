@@ -139,4 +139,23 @@ public class Tree {
 		}
 		return root.helper;
 	}
+	public void printTree(Node root,int depth)
+	{
+		System.out.println(root.spc.seq);
+		
+		if(root.child[0]!=null){
+			for(int i=0;i<depth*5;i++)System.out.print(" ");
+			System.out.print("----");
+			printTree(root.child[0],depth+1);
+		}
+		if(root.child[1]!=null){
+			for(int i=0;i<depth*5;i++){
+				System.out.print(" ");
+			}
+			System.out.print("----");
+			printTree(root.child[1],depth+1);
+		
+		}
+	}
+	
 }
