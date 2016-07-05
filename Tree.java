@@ -83,7 +83,6 @@ public class Tree {
 		int count=1;
 		if(root.parent!=null)
 		{
-			root.height=root.parent.height+1;
 			if((root.parent.helper & root.helper) !=0)
 			{
 				root.helper &=root.parent.helper;
@@ -132,7 +131,11 @@ public class Tree {
 			else {
 				root.helper=left_helper | right_helper;
 				root.score++;
-			}	
+			}
+			if(root.child[0].height>root.child[1].height)
+				root.height=root.child[0].height+1;
+			else
+				root.height=root.child[0].height+1;
 		}
 		return root.helper;
 	}
