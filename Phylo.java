@@ -15,10 +15,11 @@ public class Phylo {
      */
     
     static int noOfSpecies;
+    static int seqLen=8;
     static Species s[];
     Phylo(int n, Species s[]){
         noOfSpecies=n;
-        this.s=s;
+        Phylo.s=s;
     }
     
     public static void main(String[] args) {
@@ -29,8 +30,10 @@ public class Phylo {
         s[1]= new Species("bat","AATCGACT");
         s[2]= new Species("man","CTAAGTGT");
         s[3]= new Species("spider","TAGAGTAT");
-        Population p= new Population(3);
+        Population p= new Population(1);
         p.RandomPopulation();
-        p.print();
+        Tree t=p.pop.get(0);
+        t.HillClimb(3);
+        //p.print();
     }
 }
