@@ -75,6 +75,10 @@ public class Population {
         }
     }
     
+    /*ArrayList<ArrayList<Node>> selectWithoutReplacement()
+    {
+    	
+    }*/
     ArrayList<ArrayList<Node>> CrossOver()
     {
     	ArrayList<ArrayList<Node>> C=new ArrayList<ArrayList<Node>>();

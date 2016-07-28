@@ -21,7 +21,8 @@ public class Tree {
     }
     Tree(ArrayList<Node> T){
         this.T=T;
-        //root=T.get(T.size()-1);
+        if(T.size()>0)
+        	root=T.get(T.size()-1);
     }
     
     void print(Node c){
@@ -46,8 +47,8 @@ public class Tree {
     	Random rnd=new Random();
     	int coin=rnd.nextInt(2);
     	Node rp;
-    	coin=0;
-    	int trial=5;
+    	//coin=0;
+    	int trial=7;
     	if(coin==1)
     		SwapRandomLeaves();
     	else{
@@ -55,20 +56,18 @@ public class Tree {
     			//System.out.println("Rotating");
     			int index=rnd.nextInt(T.size()/2-1)+(T.size()+1)/2;
         		rp=T.get(index);
-        		if(--trial==0)return;
+        		if(--trial==0){
+        			SwapRandomLeaves();
+        			return;
+        		}
     		}
     		while(rp.child[1]==null || rp.child[1].child[0]==null);
     		System.out.println("Rotating "+rp.label);
     		//printTree(T.get(T.size()-1),0);
-    		System.out.println("Size "+T.size());
-    		for(int i=0;i<T.size();i++)
-    			System.out.print(T.get(i).label+" ");
-    		System.out.println();
+    		
     		Left_Rotate(rp);
     		//printTree(T.get(T.size()-1),0);
-    		for(int i=0;i<T.size();i++)
-    			System.out.print(T.get(i).label+" ");
-    		System.out.println("Size "+T.size());
+    		
     	}
     }
     private void SwapRandomLeaves()
@@ -280,24 +279,63 @@ public class Tree {
 	{
 		Tree B=new Tree(new ArrayList<Node>());
 		int i;
-		for(i=0;T.get(i).child[0]==null;i++)
+		for(i=0;i<T.size();i++)
 		{
 			Node t=new Node(T.get(i).spc,T.get(i).label);
 			B.T.add(t);
 		}
-		for(;i<T.size();i++)
+		for(i=(T.size()+1)/2;i<T.size();i++)
 		{
-			Node t=new Node(T.get(i).spc,T.get(i).label);
-			t.child[0]=B.T.get(T.indexOf(T.get(i).child[0]));
-			t.child[1]=B.T.get(T.indexOf(T.get(i).child[1]));
-			B.T.add(t);
+			//Node t=new Node(T.get(i).spc,T.get(i).label);
+			B.T.get(i).child[0]=B.T.get(T.indexOf(T.get(i).child[0]));
+			B.T.get(i).child[1]=B.T.get(T.indexOf(T.get(i).child[1]));
+			//B.T.add(t);
 		}
-		for(i=0;i<T.size()-1;i++)
+		for(i=0;i<T.size();i++)
 		{
-			B.T.get(i).parent=B.T.get(T.indexOf(T.get(i).parent));
+			if(i<T.size()-1)
+				B.T.get(i).parent=B.T.get(T.indexOf(T.get(i).parent));
+			/*if(B.T.get(i).child[0]!=null)
+			{
+
+				B.T.get(i).child[0]=B.T.get(T.indexOf(T.get(i).child[0]));
+				B.T.get(i).child[1]=B.T.get(T.indexOf(T.get(i).child[1]));
+			}*/
 		}
 		B.root=B.T.get(B.T.size()-1);
 		return B;
 	}
-	
+	private Node selectRandomInternalNode()
+	{
+		/*This function selects an internal node with Normal pdf 
+		with a previously defined mean and variance*/
+		Node r=null;
+		while(r==null)
+		{
+			Random rnd=new Random();
+			int height=(int) (rnd.nextGaussian()*Phylo.height_var_factor+root.height/Phylo.height_mean_factor);
+			int count=0;
+			for(int i=0;i<T.size();i++)
+				if(T.get(i).height==height)
+					count++;
+			
+			if(count>0)
+			{
+				int ind=rnd.nextInt(count)+1;
+				
+				for(int i=0;i<T.size();i++){
+					
+					if(T.get(i).height==height)
+						ind--;
+					
+					if(ind==0)
+					{
+						r=T.get(i);
+						break;
+					}
+				}
+			}
+		}
+		return r;
+	}
 }

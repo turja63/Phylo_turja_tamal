@@ -16,6 +16,8 @@ public class Phylo {
     
     static int noOfSpecies;
     static int seqLen=8;
+    static int height_mean_factor=3;
+    static int height_var_factor=1;
     static Species s[];
     Phylo(int n, Species s[]){
         noOfSpecies=n;
@@ -42,7 +44,7 @@ public class Phylo {
         Population p= new Population(1);
         p.RandomPopulation();
         Tree t=p.pop.get(0);
-        t.HillClimb(10);
+        t.HillClimb(20);
         //p.print();
     }
 }
