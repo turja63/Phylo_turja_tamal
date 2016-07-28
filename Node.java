@@ -9,7 +9,7 @@ package phylo;
  * @author TAMAL
  */
 public class Node {
-    int label;
+    String label;
     Node child[]= new Node[2];
     Node parent;
     int score;
@@ -19,7 +19,7 @@ public class Node {
     Species spc;
     
     
-    Node(Species s,int l){
+    Node(Species s, String l){
         label=l;
         spc=s;
         height=0;
@@ -31,12 +31,12 @@ public class Node {
     
     void print(){
         System.out.print(label);
-//        if(child[0]!=null)
-//            System.out.print(" " + child[0].label);
-//        if(child[1]!=null)
-//            System.out.print(" " + child[1].label);
-//        if(parent!=null)
-//            System.out.print(" " + parent.label);
+        if(child[0]!=null)
+            System.out.print(" " + child[0].label);
+        if(child[1]!=null)
+            System.out.print(" " + child[1].label);
+        if(parent!=null)
+            System.out.print(" " + parent.label);
         System.out.print("      ");
     }
 }
