@@ -21,8 +21,7 @@ public class Tree {
     }
     Tree(ArrayList<Node> T){
         this.T=T;
-        if(T.size()>0)
-        	root=T.get(T.size()-1);
+        if(T.size()>0)root=T.get(T.size()-1);
     }
     
     void print(Node c){
@@ -40,8 +39,9 @@ public class Tree {
         for(int i=0;i<T.size();i++){
             T.get(i).print();
         }
+         System.out.println("");
     }
-    public void SmallTweak()
+   public void SmallTweak()
     {
     	//first we flip a coin if it is head then we do swap else we rotate
     	Random rnd=new Random();
@@ -62,7 +62,7 @@ public class Tree {
         		}
     		}
     		while(rp.child[1]==null || rp.child[1].child[0]==null);
-    		System.out.println("Rotating "+rp.label);
+    		//System.out.println("Rotating "+rp.label);
     		//printTree(T.get(T.size()-1),0);
     		
     		Left_Rotate(rp);
@@ -89,7 +89,7 @@ public class Tree {
     	Node p1=leaf1.parent;
     	Node p2=leaf2.parent;
     	
-    	System.out.println("Swapping "+leaf1.label+" and "+leaf2.label);
+    	//System.out.println("Swapping "+leaf1.label+" and "+leaf2.label);
     	leaf1.parent=p2;
     	leaf2.parent=p1;
     	if(p1.child[0]==leaf1)
@@ -99,7 +99,7 @@ public class Tree {
     	if(p2.child[0]==leaf2)
     		p2.child[0]=leaf1;
     	else p2.child[1]=leaf1;
-    	System.out.println();
+    	//System.out.println();
     	//printTree(root,0);
     		
     }
@@ -139,19 +139,13 @@ public class Tree {
     	int count=0;
     	while(iteration-->0)
     	{
-    		System.out.println("Tweak: "+count++);
     		copyTree.SmallTweak();
     		copyTree.ParsimonizeTree();
     		
-    		if(current.Score>copyTree.Score){
-
-    			System.out.println(current.Score+" "+copyTree.Score);
+    		if(current.Score>copyTree.Score)
     			current=copyTree.getCopy();
-    			//printTree(current.T.get(current.T.size()-1),0);
-    			}
     	}
     	this.T=current.T;
-    	printTree(T.get(T.size()-1),0);
     }
     public int ParsimonizeTree()
 	{
@@ -193,8 +187,6 @@ public class Tree {
 		}
 		Score=root.finalScore;
 		return root.finalScore;
-		//System.out.println("Score:"+root.finalScore);
-		//System.out.println("after that");
 	}
 	private void PreOrder(Node root,int site)
 	{
@@ -257,16 +249,20 @@ public class Tree {
 		}
 		return root.helper;
 	}
+	public void printTree()
+	{
+		printTree(root,0);
+	}
 	public void printTree(Node root,int depth)
 	{
 		System.out.println(root.label);
 		
-		if(root.child[1]!=null){
+		if(root.child[0]!=null){
 			for(int i=0;i<depth*5;i++)System.out.print(" ");
 			System.out.print("----");
 			printTree(root.child[0],depth+1);
 		}
-		if(root.child[0]!=null){
+		if(root.child[1]!=null){
 			for(int i=0;i<depth*5;i++){
 				System.out.print(" ");
 			}
@@ -284,48 +280,42 @@ public class Tree {
 			Node t=new Node(T.get(i).spc,T.get(i).label);
 			B.T.add(t);
 		}
+		
 		for(i=(T.size()+1)/2;i<T.size();i++)
 		{
-			//Node t=new Node(T.get(i).spc,T.get(i).label);
-			B.T.get(i).child[0]=B.T.get(T.indexOf(T.get(i).child[0]));
-			B.T.get(i).child[1]=B.T.get(T.indexOf(T.get(i).child[1]));
-			//B.T.add(t);
-		}
-		for(i=0;i<T.size();i++)
-		{
-			if(i<T.size()-1)
-				B.T.get(i).parent=B.T.get(T.indexOf(T.get(i).parent));
-			/*if(B.T.get(i).child[0]!=null)
-			{
-
+			if(T.get(i).child[0]!=null)
 				B.T.get(i).child[0]=B.T.get(T.indexOf(T.get(i).child[0]));
+			if(T.get(i).child[1]!=null)
 				B.T.get(i).child[1]=B.T.get(T.indexOf(T.get(i).child[1]));
-			}*/
 		}
+		for(i=0;i<T.size()-1;i++)
+				B.T.get(i).parent=B.T.get(T.indexOf(T.get(i).parent));
+		
 		B.root=B.T.get(B.T.size()-1);
 		return B;
 	}
-	private Node selectRandomInternalNode()
+	public Node selectRandomInternalNode()
 	{
 		/*This function selects an internal node with Normal pdf 
 		with a previously defined mean and variance*/
 		Node r=null;
+		int trial=5;
 		while(r==null)
 		{
 			Random rnd=new Random();
 			int height=(int) (rnd.nextGaussian()*Phylo.height_var_factor+root.height/Phylo.height_mean_factor);
 			int count=0;
-			for(int i=0;i<T.size();i++)
-				if(T.get(i).height==height)
+			for(int i=0;i<T.size()-1;i++)
+				if(T.get(i).height==height && T.get(i)!=root && T.get(i).child[0]!=null && T.get(i).child[1]!=null)
 					count++;
 			
 			if(count>0)
 			{
 				int ind=rnd.nextInt(count)+1;
 				
-				for(int i=0;i<T.size();i++){
+				for(int i=(T.size()+1)/2;i<T.size();i++){
 					
-					if(T.get(i).height==height)
+					if(T.get(i).height==height && T.get(i)!=root && T.get(i).child[0]!=null && T.get(i).child[1]!=null)
 						ind--;
 					
 					if(ind==0)
@@ -334,6 +324,10 @@ public class Tree {
 						break;
 					}
 				}
+			}
+			if(--trial==0){
+				r=T.get(rnd.nextInt((T.size()-1)/2)+(T.size()+1)/2-1);
+				break;
 			}
 		}
 		return r;
