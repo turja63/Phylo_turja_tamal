@@ -42,6 +42,37 @@ public class Tree {
     }
     public void SmallTweak()
     {
+    	//first we flip a coin if it is head then we do swap else we rotate
+    	Random rnd=new Random();
+    	int coin=rnd.nextInt(2);
+    	Node rp;
+    	coin=0;
+    	int trial=5;
+    	if(coin==1)
+    		SwapRandomLeaves();
+    	else{
+    		do{
+    			//System.out.println("Rotating");
+    			int index=rnd.nextInt(T.size()/2-1)+(T.size()+1)/2;
+        		rp=T.get(index);
+        		if(--trial==0)return;
+    		}
+    		while(rp.child[1]==null || rp.child[1].child[0]==null);
+    		System.out.println("Rotating "+rp.label);
+    		//printTree(T.get(T.size()-1),0);
+    		System.out.println("Size "+T.size());
+    		for(int i=0;i<T.size();i++)
+    			System.out.print(T.get(i).label+" ");
+    		System.out.println();
+    		Left_Rotate(rp);
+    		//printTree(T.get(T.size()-1),0);
+    		for(int i=0;i<T.size();i++)
+    			System.out.print(T.get(i).label+" ");
+    		System.out.println("Size "+T.size());
+    	}
+    }
+    private void SwapRandomLeaves()
+    {
     	//printTree(root,0);
     	int leaf_count=(T.size()+1)/2;
     	Random r=new Random();
@@ -73,14 +104,43 @@ public class Tree {
     	//printTree(root,0);
     		
     }
+    private void Left_Rotate(Node rp)
+    {
+    	Node temp=rp.child[1];
+    	rp.child[1]=temp.child[0];
+    	rp.child[1].parent=rp;
+    	temp.child[0]=rp;
+    	temp.parent=rp.parent;
+    	rp.parent=temp;
+    	if(temp.parent==null)
+    	{
+    		int a=T.indexOf(temp);
+    		int b=T.indexOf(rp);
+    		T.set(a, rp);
+    		T.set(b, temp);
+    	}
+    	else {
+    		if(temp.parent.child[0]==rp)
+    			temp.parent.child[0]=temp;
+    		else 
+    			temp.parent.child[1]=temp;
+		}
+    	int ind1=T.indexOf(temp);
+    	int ind2=T.indexOf(rp);
+    	T.set(ind1, rp);
+    	T.set(ind2, temp);
+    
+    }
     public void HillClimb(int iteration)
     {
     	
     	Tree current=this;
     	Tree copyTree=current.getCopy();
     	current.ParsimonizeTree();
+    	int count=0;
     	while(iteration-->0)
     	{
+    		System.out.println("Tweak: "+count++);
     		copyTree.SmallTweak();
     		copyTree.ParsimonizeTree();
     		
@@ -92,7 +152,7 @@ public class Tree {
     			}
     	}
     	this.T=current.T;
-    	//printTree(T.get(T.size()-1),0);
+    	printTree(T.get(T.size()-1),0);
     }
     public int ParsimonizeTree()
 	{
@@ -202,12 +262,12 @@ public class Tree {
 	{
 		System.out.println(root.label);
 		
-		if(root.child[0]!=null){
+		if(root.child[1]!=null){
 			for(int i=0;i<depth*5;i++)System.out.print(" ");
 			System.out.print("----");
 			printTree(root.child[0],depth+1);
 		}
-		if(root.child[1]!=null){
+		if(root.child[0]!=null){
 			for(int i=0;i<depth*5;i++){
 				System.out.print(" ");
 			}
@@ -220,7 +280,7 @@ public class Tree {
 	{
 		Tree B=new Tree(new ArrayList<Node>());
 		int i;
-		for(i=0;T.get(i).child[0]==null && T.get(i).child[1]==null;i++)
+		for(i=0;T.get(i).child[0]==null;i++)
 		{
 			Node t=new Node(T.get(i).spc,T.get(i).label);
 			B.T.add(t);
