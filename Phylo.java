@@ -3,7 +3,8 @@
  * and open the template in the editor.
  */
 package phylo;
-
+import java.util.ArrayList;
+import java.lang.Math;
 /**
  *
  * @author TAMAL
@@ -16,35 +17,31 @@ public class Phylo {
     
     static int noOfSpecies;
     static int seqLen=8;
-    static int height_mean_factor=3;
-    static int height_var_factor=1;
     static Species s[];
     Phylo(int n, Species s[]){
         noOfSpecies=n;
         Phylo.s=s;
     }
     
+    ArrayList<Node> genLeafNodes(Species s[]){
+        ArrayList<Node> leaves= new ArrayList<Node>();
+        for(int i=0;i<s.length;i++)
+            leaves.add(new Node(s[i],i));
+        return leaves;
+    }
+    
     public static void main(String[] args) {
         // TODO code application logic here
-        noOfSpecies=12;
+        noOfSpecies=4;
         s= new Species[noOfSpecies];
         s[0]= new Species("cow","ATCGGTCT");
         s[1]= new Species("bat","AATCGACT");
         s[2]= new Species("man","CTAAGTGT");
         s[3]= new Species("spider","TAGAGTAT");
-        s[4]=new Species("whale","CCTTAAGG");
-        s[5]=new Species("tiger","GTAATGCC");
-        s[6]=new Species("lion","TTAATGCC");
-        s[7]=new Species("pokemon","GTGGAGCC");
-        s[8]=new Species("pokemon1","GTGTTGCC");
-        s[9]=new Species("pokemon2","CCGGAGCC");
-        s[10]=new Species("pokemon3","GTGGTGCC");
-        s[11]=new Species("pokemon4","AAAAAGCC");
-        
-        Population p= new Population(1);
+        Population p= new Population(3,s);
         p.RandomPopulation();
-        Tree t=p.pop.get(0);
-        t.HillClimb(20);
-        //p.print();
+        //Tree t=p.pop.get(0);
+        //t.HillClimb(3);
+        p.print();
     }
 }
