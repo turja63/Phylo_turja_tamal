@@ -176,6 +176,22 @@ public class Tree {
 					case 8:
 						T.get(j).spc.seq[i]='C';
 						break;
+					case 16:
+						T.get(j).spc.seq[i]='-';
+						break;
+					case 32:
+						T.get(j).spc.seq[i]='M';
+						break;
+					case 64:
+						T.get(j).spc.seq[i]='R';
+						break;
+					case 128:
+						T.get(j).spc.seq[i]='K';
+						break;
+					case 256:
+						T.get(j).spc.seq[i]='W';
+						break;
+					
 					}
 					T.get(j).finalScore+=T.get(j).score;
 				}
@@ -190,6 +206,7 @@ public class Tree {
 	}
 	private void PreOrder(Node root,int site)
 	{
+		//System.out.println("Helper:"+root.helper);
 		int count=1;
 		if(root.parent!=null)
 		{
@@ -228,6 +245,21 @@ public class Tree {
 			case 'C':
 				root.helper=8;
 				return 8;
+			case '-':
+				root.helper=16;
+				return 16;
+			case 'M':
+				root.helper=32;
+				return 32;
+			case 'R':
+				root.helper=64;
+				return 64;
+			case 'K':
+				root.helper=128;
+				return 128;
+			case 'W':
+				root.helper=256;
+				return 256;
 			}
 		}
 		else
@@ -245,7 +277,7 @@ public class Tree {
 			if(root.child[0].height>root.child[1].height)
 				root.height=root.child[0].height+1;
 			else
-				root.height=root.child[0].height+1;
+				root.height=root.child[1].height+1;
 		}
 		return root.helper;
 	}

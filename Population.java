@@ -37,7 +37,7 @@ public class Population {
         	Tree t=GenRandomIndividual();
         	t.ParsimonizeTree();
             pop.add(t);
-            
+            System.out.println("pop:"+i);
             //ParsimonyScore.ParsimonizeTree(pop.get(i));
         }
     }
