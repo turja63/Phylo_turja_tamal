@@ -303,32 +303,48 @@ public class Tree {
 		with a previously defined mean and variance*/
 		Node r=null;
 		int trial=5;
+		Random rnd=new Random();
 		while(r==null)
 		{
-			Random rnd=new Random();
+			int coin=rnd.nextInt(100);
 			int height=(int) (rnd.nextGaussian()*Phylo.height_var_factor+root.height/Phylo.height_mean_factor);
 			int count=0;
+			int index=-1;
+			int min=-1;
 			for(int i=0;i<T.size()-1;i++)
 				if(T.get(i).height==height && T.get(i)!=root && T.get(i).child[0]!=null && T.get(i).child[1]!=null)
+				{
 					count++;
-			
-			if(count>0)
-			{
-				int ind=rnd.nextInt(count)+1;
-				
-				for(int i=(T.size()+1)/2;i<T.size();i++){
-					
-					if(T.get(i).height==height && T.get(i)!=root && T.get(i).child[0]!=null && T.get(i).child[1]!=null)
-						ind--;
-					
-					if(ind==0)
+					if(min==-1 || T.get(i).score<min)
 					{
-						r=T.get(i);
-						break;
+						min=T.get(i).score;
+						index=i;
 					}
 				}
+			
+			if(count>0 && index!=-1)
+			{
+				if(coin>Phylo.crossOver_exploitation)
+				{
+					int ind=rnd.nextInt(count)+1;
+					
+					for(int i=(T.size()+1)/2;i<T.size();i++){
+						
+						if(T.get(i).height==height && T.get(i)!=root && T.get(i).child[0]!=null && T.get(i).child[1]!=null)
+							ind--;
+						
+						if(ind==0)
+						{
+							r=T.get(i);
+							break;
+						}
+					}
+				}
+				else
+					r=T.get(index);
 			}
-			if(--trial==0){
+			else
+			{
 				r=T.get(rnd.nextInt((T.size()-1)/2)+(T.size()+1)/2-1);
 				break;
 			}

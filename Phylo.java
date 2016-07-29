@@ -19,10 +19,11 @@ public class Phylo {
     static int seqLen=8;
     static float height_mean_factor=(float) 1.5;
     static int height_var_factor=1;
-    static int popSize=4;
+    static int popSize=10;
     static int tournament_candidate=5;
     static int t=5; //number of iteration to hill climb
-    static int time=100; //total time
+    static int time=10000; //total time
+    static int crossOver_exploitation=15; //percentage value
     static Species s[];
     Phylo(int n, Species s[]){
         noOfSpecies=n;
