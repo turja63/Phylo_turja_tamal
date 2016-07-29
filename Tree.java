@@ -288,8 +288,11 @@ public class Tree {
 			if(T.get(i).child[1]!=null)
 				B.T.get(i).child[1]=B.T.get(T.indexOf(T.get(i).child[1]));
 		}
-		for(i=0;i<T.size()-1;i++)
-				B.T.get(i).parent=B.T.get(T.indexOf(T.get(i).parent));
+		for(i=0;i<T.size()-1;i++){
+				//if(T.get(i).parent!=null)
+					B.T.get(i).parent=B.T.get(T.indexOf(T.get(i).parent));
+				//else B.T.get(i).parent=null;
+		}
 		
 		B.root=B.T.get(B.T.size()-1);
 		return B;

@@ -99,6 +99,11 @@ public class Phylo {
         
         
         Best.printTree();
+        System.out.println("\nScore: "+Best.Score+"\nOther Scores:");
+        for(int i=0;i<p.pop.size();i++)
+        {
+        	System.out.print(p.pop.get(i).Score+" ");
+        }
         
     }
 }

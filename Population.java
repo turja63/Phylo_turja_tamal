@@ -92,10 +92,10 @@ public class Population {
     Tree tournamentSelection(int numberOfCandidate)
     {
     	Random rnd=new Random();
-    	Tree t=pop.get(rnd.nextInt(popSize));
+    	Tree t=pop.get(rnd.nextInt(pop.size()));
     	
     	for(int i=0;i<numberOfCandidate;i++){
-    		Tree temp=pop.get(rnd.nextInt(popSize));
+    		Tree temp=pop.get(rnd.nextInt(pop.size()));
     		if(temp.root.score<t.root.score)
     			t=temp;
     	}
@@ -104,7 +104,7 @@ public class Population {
     Tree SelectForDeath()
     {
     	Random rnd=new Random();
-    	return pop.remove(rnd.nextInt(popSize));
+    	return pop.remove(rnd.nextInt(pop.size()));
     }
     private void getLeaves(Node root,ArrayList<Node> L)
     {
@@ -121,22 +121,29 @@ public class Population {
     	Tree P2=pr2.getCopy();//child2
     	
     	Node iNode=P1.selectRandomInternalNode(); //select random internalNode
-    	System.out.println("Selected : "+iNode.label);
+    	//System.out.println("Selected : "+iNode.label);
     	ArrayList<Node> L=new ArrayList<Node>();
     	getLeaves(iNode,L);                       //find corresponding leaves
+    	for(int i=0;i<L.size();i++)
+    	{
+    		Node l=L.remove(0);
+    		L.add(P2.T.get(l.label));
+    	}
     	
-    	P1.printTree();
-    	System.out.println();
-    	P2.printTree();
+    	//System.out.println("\nSource");
+    	////P1.printTree();
+    	//System.out.println("\nDestination:\n");
+    	//P2.printTree();
    
     	//delete those leaves from P2
     	ArrayList<Node> spareInternalNodes=new ArrayList<Node>();
     	for(int i=0;i<L.size();i++)
     	{
-    		System.out.println("Deleting : "+L.get(i).label);
     		Node leaf_1=L.get(i);
     		Node leaf_2=P2.T.get(leaf_1.label);
+    		leaf_2.dirty=1;
     		Node parent=leaf_2.parent;
+    		parent.dirty=1;
     		Node sibling = null;
     		Node grandParent=parent.parent;
     		
@@ -156,20 +163,33 @@ public class Population {
     			}
     			else if(grandParent==null)
     			{
+    				
+    				int a=P2.T.indexOf(sibling);
+    				P2.T.set(a, P2.root);
+    				P2.T.set(P2.T.size()-1, sibling);
     				P2.root=sibling;
+    				break;
     			}
     		
     		leaf_2.parent=null;
     		sibling.parent=grandParent;
     		spareInternalNodes.add(parent);
     	}
-    	P2.printTree();
+    	
+    	//P2.printTree();
     	//leaves deleted
+    	int trial=10;
     	do{
     		iNode=P2.selectRandomInternalNode();
-    	}while(iNode.child[0]==null || iNode.child[1]==null);
+    		if(--trial==0)
+    			return P1;
+    		//System.out.println("Hel");
+    	}while(iNode.dirty==1 || iNode.parent==null || iNode==P2.root);
     	Random rnd=new Random();
+    	//create new subtree
     	int count=0;
+    	ArrayList<Node> checkList=new ArrayList<Node>(L);
+    	
     	while(L.size()>1)
     	{
 	    	int l1=rnd.nextInt(L.size());
@@ -177,18 +197,24 @@ public class Population {
 	    	int l2=rnd.nextInt(L.size());
 	    	Node removed_2=L.remove(l2);
 	    	
-	    	Node p=spareInternalNodes.get(count++);
+	    	Node p=spareInternalNodes.remove(0);
 	    	removed_1.parent=p;
 	    	removed_2.parent=p;
 	    	p.child[0]=removed_1;
 	    	p.child[1]=removed_2;
 	    	
 	    	L.add(p);
+	    	checkList.add(p);
+	    	removed_1.dirty=0;
+	    	removed_2.dirty=0;
     	}
+    	//System.out.println("From List");
     	
+    	//System.out.println("Selected : "+iNode.label);
+    	Node r=spareInternalNodes.remove(0);
+    	r.dirty=0;
     	
-    	System.out.println("Selected : "+iNode.label);
-    	Node r=spareInternalNodes.get(count);
+    	//System.out.println();
     	for(int i=0;i<2;i++)
 	    	if(iNode.parent.child[i]==iNode)
 	    	{
@@ -198,12 +224,12 @@ public class Population {
 	    		iNode.parent=r;
 	    		r.child[1-i]=L.get(0);
 	    		L.get(0).parent=r;
+	    		checkList.add(r);
+	    		L.get(0).dirty=0;
 	    		break;
 	    	}
     	
-    	System.out.println("\nActual Tree\n");
-    	P2.printTree();
-    	
+    	//P2.printTree();
     	return P2;
     }
     

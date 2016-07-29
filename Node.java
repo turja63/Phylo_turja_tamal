@@ -17,7 +17,7 @@ public class Node {
     int height;
     int helper;
     Species spc;
-    
+    int dirty;
     
     Node(Species s,int l){
         label=l;
