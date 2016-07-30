@@ -5,8 +5,17 @@
 package phylo;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import org.apache.poi.sl.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.Math;
 /**
  *
@@ -20,13 +29,13 @@ public class Phylo {
     
     static int noOfSpecies;
     static int seqLen;
-    static float height_mean_factor=(float) 1.5;
-    static int height_var_factor=2;
-    static int popSize=50;
-    static int tournament_candidate=5;
-    static int t=1; //number of iteration to hill climb
-    static int time=10000; //total time
-    static int crossOver_exploitation=25; //percentage value
+    static float height_mean_factor=(float) 2;
+    static int height_var_factor=1;
+    static int popSize=30;
+    static int tournament_candidate=20;
+    static int t=100; //number of iteration to hill climb
+    static int time=200; //total time
+    static int crossOver_exploitation=10; //percentage value
     static Species s[];
     static ArrayList<Species> input=new ArrayList<Species>();
     Phylo(int n, Species s[]){
@@ -62,16 +71,7 @@ public class Phylo {
 						seqLen=seq.length();
 					input.add(new Species(spc,seq));
 					char [] seq2=seq.toCharArray();
-					for(int i=0;i<seq.length();i++)
-						if(seq2[i]=='W' ||seq2[i]=='K' ||seq2[i]=='R' ||seq2[i]=='M' || seq2[i]=='A' || seq2[i]=='G' || seq2[i]=='T' || seq2[i]=='C' || seq2[i]=='-')
-						{
-							
-						}
-						else {
-						flag2=1;
-							System.out.print(seq2[i]);
-						}
-					if(flag2==1)System.out.println("Got culprit");
+					
 					count++;
 				}
 			}
@@ -109,6 +109,7 @@ public class Phylo {
         s[10]=new Species("pokemon3","GTGGTGCC");
         s[11]=new Species("pokemon4","AAAAAGCC");*/
         
+        long startTime=System.currentTimeMillis();
         Population p= new Population(Phylo.popSize,s);
         System.out.println("I made it againg");
         p.RandomPopulation();		//initialize pop
@@ -156,13 +157,42 @@ public class Phylo {
         	
         }while(time-->0);
         
-        
+        long endTime=System.currentTimeMillis();
         Best.printTree();
-        System.out.println("\nScore: "+Best.Score+"\nOther Scores:");
-        for(int i=0;i<p.pop.size();i++)
-        {
-        	System.out.print(p.pop.get(i).Score+" ");
+        
+        //write to a excel file
+        String fileName="Result.xlsx";
+        FileInputStream fis;
+        FileOutputStream fos;
+        XSSFWorkbook wb=null;
+        try {
+          fis= new FileInputStream(fileName);
+          wb = new XSSFWorkbook(fis);
+          fis.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
+        String sheetName="result";
+        XSSFSheet sheet =  wb.getSheet(sheetName);
+        int row_count= sheet.getLastRowNum();
+        System.out.println("r:"+row_count);
+        Row r=sheet.createRow(row_count+1);
+        r.createCell(0).setCellValue(Best.Score);
+        r.createCell(1).setCellValue((-startTime+endTime)/1000);
+        try {
+            fos= new FileOutputStream(fileName);
+            wb.write(fos);
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("\nScore: "+Best.Score+"\nOther Scores:");
+        System.out.println("Run Time: "+(-startTime+endTime)/1000+" s");
         
     }
 }
